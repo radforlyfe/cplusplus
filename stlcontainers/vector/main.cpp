@@ -20,6 +20,15 @@ int main() {
     std::cout << "vs stores: " << vs.at(0) << '\n';
     
     auto foo_out = foo();
+    
+    STLContainer::Vector<int> nums {1,2,3};
+    for(const auto& num : nums){
+        std::cout<< num << " ";}
+    
+    STLContainer::Vector<std::string> vs1 {"11", "22", "33"};
+    std::cout << "vs1 stats: " << vs1.size() << " " << vs1.capacity() << '\n';
+    vs1.push_back("hello");
+    std::cout << "vs1 stores: " << vs1.at(0) << '\n';
 
     STLContainer::Vector<std::string> vs2(std::move(foo_out));
     std::cout << "vs2 stats: " << vs2.size() << " " << vs2.capacity() << '\n';

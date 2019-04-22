@@ -8,10 +8,6 @@
 #include <memory>
 #include<string>
 
-
-
-
-
 namespace STLContainer{
    
     template<typename T>
@@ -23,7 +19,7 @@ namespace STLContainer{
         
     public:
         
-        // Type Definitions:
+// Type Definitions:
         using size_type = size_t; // alias
         using value_type = T;
         using pointer = value_type*;
@@ -33,28 +29,36 @@ namespace STLContainer{
         using reference = value_type&;
         using const_reference = const value_type&;
         
+// Constructors:
+        
+        // Default constructor:
         Vector(): size_(0), capacity_(0){
             reserve(INITIAL_CAPACITY);
         }
     
         Vector(size_type count, const T& value): size_(0), capacity_(0){
             reserve(GROWTH_FACTOR * count); // sets capacity_ to twice of count
-            for(size_type index = 0; index < count; ++index){ // initializes all string variables to value
+            for(size_type index = 0; index < count; ++index){
                 data_[index] = value;
             }
             size_ = count; // sets vector size to count
         }
   
-        
-        Vector(size_type count) : Vector(count, "") {}
+        explicit Vector(size_type count) : Vector(count, "") {}
     
+        Vector(std::initializer_list<T> init): size_(0), capacity_(0){
+            size_type count = init.size();
+            reserve(count);
+            for(auto &element: init){
+                push_back(element);
+            }
+            size_ = count;
+        }
         
         // Copy constructor:
         Vector(const Vector& other): size_(0), capacity_(0){
             reserve(other.capacity()); // sets capacity_ to other.capacity
-            for(size_t index = 0; index < other.size(); ++index){ // copies each element of data_ equal to the elements of other.data_
-                data_[index] = other.data_[index];
-            }
+            copy_elements(other.data_.get(), data_.get(), other.size());
             size_ = other.size(); // copies vector size to other's size
         }
        
@@ -64,7 +68,8 @@ namespace STLContainer{
             std::swap(size_, other.size_); // then swap their sizes
             std::swap(capacity_, other.capacity_); // then swap their capacities
         }
-       
+        
+// Operator=:
         
         // Copy assignment:
         Vector& operator=(const Vector& other){
@@ -75,7 +80,6 @@ namespace STLContainer{
             return *this;
         }
         
-        
         // Move assignment:
         Vector& operator=(Vector&& other){
             std::swap(data_, other.data_); // then swap their pointers
@@ -83,37 +87,46 @@ namespace STLContainer{
             std::swap(capacity_, other.capacity_); // then swap their capacities
             return *this;
         }
+
+// Iterators:
         
-       
+        // Returns an iterator to the first element of the container. If the container is empty, the returned iterator will be equal to end().
+        iterator begin() noexcept{
+            if(!empty()){
+                return data_.get();}
+            else{
+                return end();
+            }
+        }
         
-        // Iterators:
+        const_iterator begin() const noexcept{
+            if(!empty()){
+                return data_.get();}
+            else{
+                return end();
+            }
+        }
         
-//        iterator begin() noexcept;
-//
-//        const_iterator begin() const noexcept;
-//
-//        const_iterator cbegin() const noexcept;
+        // Returns an iterator to the element following the last element of the container.
+        // This element acts as a placeholder; attempting to access it results in undefined behavior.
+        iterator end() noexcept{
+            return (data_.get() + size());
+        }
         
+        const_iterator end() const noexcept{
+            return (data_.get() + size());
+        }
+        
+// Capacity:
         
         // Empty:
-        bool empty() const noexcept{
-            return (size()==0);
-        }
+        bool empty() const noexcept { return (size()==0); }
         
-        // Clear: Erases all elements from the container. After this call, size() returns zero.
-        void clear() noexcept{
-            size_=0;
-        }
+        // Size:
+        size_type size() const { return size_; }
         
-        // Size member function
-        size_type size() const{
-            return size_; // return size
-        }
-        
-        // Capacity member function
-        size_type capacity() const{
-            return capacity_; // returns capacity
-        }
+        // Capacity:
+        size_type capacity() const { return capacity_; }
         
         //Reserve member function:
         void reserve(size_type new_cap){
@@ -121,41 +134,16 @@ namespace STLContainer{
                 return;
             }
             auto new_data = std::make_unique<value_type[]>(new_cap); // new pointer new_data
-            // copy each element from data_ to new_data
-            for(size_type index = 0; index < size_; ++index){ // copies all elements in vector to new_data vector with new capacity
-                new_data[index] = data_[index];
-            }
+            copy_elements(data_.get(), new_data.get(), size_);
             data_.reset(new_data.release()); // delete previous memory
-            //data_ = new_data; // data_ now points to the new memory location
-            capacity_ = new_cap; // capacity_ is the new capacity
+            capacity_ = new_cap - 1; // capacity_ is the new capacity
         }
         
+// Modifiers:
         
-        
-        // Push back member function: Adds an element to the end of the vector if the capacity allows.
-        void push_back(const T& value){
-            if(size_ == capacity_){
-                reserve(GROWTH_FACTOR * capacity_); // sets to twice capacity
-            }
-            data_[size_] = value; // sets last element plus one to value
-            size_++;
-        }
-        
-        // Pop Back member function: removes the last element of the vector by updating the size of the vector.
-        void pop_back(){
-            if(size()!=0){
-                size_--; // deletes one element as long as size is not zero
-            }
-        }
-        
-        // DeleteAt member function: accepts an index value that removes the element at the given index and shifts all elements backwards.
-        void deleteAt(size_type pos){
-            if(pos>=0 && pos<size()){
-                for(size_type index = pos; index< size()-1; ++index){ // copies one element ahead to element behind
-                    data_[index] = data_[index+1];
-                }
-                size_--;
-            }
+        // Clear: Erases all elements from the container. After this call, size() returns zero.
+        void clear() noexcept{
+            size_=0;
         }
         
         // InsertAt member function:
@@ -172,19 +160,96 @@ namespace STLContainer{
             data_[pos]= value; // sets value to pos index
         }
         
-        
-        // At member function: Accepts an index value that returns the element at the given index by reference or reference to const.
-        T& at( size_type pos ) {
-            return data_[pos]; // gives value at pos
+        // DeleteAt member function: accepts an index value that removes the element at the given index and shifts all elements backwards.
+        void deleteAt(size_type pos){
+            if(pos>=0 && pos<size()){
+                for(size_type index = pos; index< size()-1; ++index){ // copies one element ahead to element behind
+                    data_[index] = data_[index+1];
+                }
+                size_--;
+            }
         }
         
-        // At member function: Accepts an index value that returns the element at the given index by reference or reference to const.
-        const T& at( size_type pos ) const{
-            return data_[pos]; // gives value at pos
+        // Push back member function: Adds an element to the end of the vector if the capacity allows.
+        void push_back(const T& value){
+            if(size_ == capacity_){
+                reserve(GROWTH_FACTOR * capacity_); // sets to twice capacity
+            }
+            data_[size_] = value; // sets last element plus one to value
+            size_++;
         }
         
+        void push_back(T&& value){
+            if(size_ == capacity_){
+                reserve(GROWTH_FACTOR * capacity_); // sets to twice capacity
+            }
+            data_[size_] = value; // sets last element plus one to value
+            size_++;
+        }
         
+        // Pop Back member function: removes the last element of the vector by updating the size of the vector.
+        void pop_back(){
+            if(size()!=0){
+                size_--; // deletes one element as long as size is not zero
+            }
+        }
+        
+// Element access:
+        
+        // At member function: Returns a reference to the element at specified location pos, with bounds checking.
+        // If pos is not within the range of the container, an exception of type std::out_of_range is thrown.
+        reference at( size_type pos ) {
+            if(pos>=0 && pos<size()){
+                return data_[pos];
+            }
+            else{
+                throw std::out_of_range {"Vector::operator[]"};
+            }
+        }
+        
+        const_reference at( size_type pos ) const{
+            if(pos>=0 && pos<size()){
+                return data_[pos];
+            }
+            else{
+                throw std::out_of_range {"Vector::operator[]"};
+            }
+        }
+        
+        // Returns a reference to the element at specified location pos. No bounds checking is performed.
+        reference operator[] (size_type pos){
+            return data_[pos];
+        }
        
+        const_reference operator[] (size_type pos) const{
+            return data_[pos];
+        }
+        
+        // Returns a reference to the first element in the container. Calling front on an empty container is undefined.
+        reference front(){
+            if(!empty()){
+                return *data_;
+            }
+        }
+        
+        const_reference front() const{
+            if(!empty()){
+                return *data_;
+            }
+        }
+        
+        // Returns reference to the last element in the container. Calling back on an empty container is undefined.
+        reference back(){
+            if(!empty()){
+                return *(data_ + size() - 1);
+            }
+        }
+        
+        const_reference back() const{
+            if(!empty()){
+                return *(data_ + size() - 1);
+            }
+        }
         
     private:
       
@@ -192,6 +257,11 @@ namespace STLContainer{
         size_type capacity_; // capacity of the vector
         std::unique_ptr<value_type[]> data_;
         
+        void copy_elements(value_type* from, value_type* to, size_type count){
+            for(size_type index = 0; index < count; ++index){
+                to[index] = from[index];
+            }
+        }
         
     };
 }
