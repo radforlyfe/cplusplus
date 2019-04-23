@@ -36,3 +36,32 @@ bool Sequence::empty() const{
 int Sequence::size() const{
     return size_;
 }
+
+// Insert value into the sequence so that it becomes the item at
+// position pos. The original item at position pos and those that
+// follow it end up at positions one higher than they were at before.
+// Return pos if 0 <= pos <= size() and the value could be
+// inserted.  (It might not be, if the sequence has a fixed capacity,
+// e.g., because it's implemented using a fixed-size array.)  Otherwise,
+// leave the sequence unchanged and return -1.  Notice that
+// if pos is equal to size(), the value is inserted at the end.
+int Sequence::insert(int pos, const ItemType& value){
+    if(pos >= 0 && pos <= size()){
+        Node * thisC = head;
+        int count = 0;
+        while(count != pos-1){
+            thisC = thisC->next;
+            count++;
+        }
+        Node * new_node = new Node;
+        new_node->next = thisC->next;
+        new_node->previous = thisC;
+        thisC->next = new_node;
+        new_node->next->previous = new_node;
+        size_++;
+        return pos;
+    }
+    else{
+        return -1;
+    }
+}
