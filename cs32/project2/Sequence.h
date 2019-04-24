@@ -7,12 +7,12 @@
 #define Sequence_H
 
 #include<string>
-
 using ItemType = std::string;
 
 class Sequence
 {
 public:
+    
     // Create an empty sequence (i.e., one with no items)
     Sequence();
     
@@ -85,12 +85,17 @@ public:
     
 private:
     struct Node{
-        ItemType value;
-        Node* next;
-        Node* previous;
+        ItemType value_;
+        Node* next_;
+        Node* prev_;
+        Node() {};
+        Node(ItemType value, Node*next=nullptr, Node*previous=nullptr):value_(value), next_(next), prev_(previous) {};
     };
     Node* head;
     int size_;
+    
+    void createNode(Node* previousNode, const ItemType& value);
+    
 };
 
 int subsequence(const Sequence& seq1, const Sequence& seq2);
