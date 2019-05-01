@@ -52,27 +52,3 @@ std::ostream& operator<<(std::ostream& out, const Complex& c){
 //        throw std::runtime_error("bad inputs for reading");
 //    return in;
 //}
-
-// Conversion operators:
-bool operator<(const Complex& lhs, const Complex& rhs){
-    if (lhs["real"] < rhs["real"])
-        return true;
-    if(lhs["real"] == rhs["real"] && lhs["imag"] < rhs["imag"])
-        return true;
-    return false;
-}
-bool operator>(const Complex& lhs, const Complex& rhs){
-    if (lhs["real"] == rhs["real"] && lhs["imag"] == rhs["imag"])
-        return true;
-    return false;
-}
-bool operator==(const Complex& lhs, const Complex& rhs){
-    if (lhs["real"] == rhs["real"] && lhs["imag"] == rhs["imag"])
-        return true;
-    return false;
-}
-bool operator!=(const Complex& lhs, const Complex& rhs);
-bool operator<=(const Complex& lhs, const Complex& rhs);
-bool operator>=(const Complex& lhs, const Complex& rhs);
-
-
