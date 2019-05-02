@@ -43,15 +43,23 @@ void print_grid(char maze[][10])
     }
 }
 
+// print stack:
+void print_stack(std::stack<Coord>result){
+    for(size_t count = result.size(); count > 0; --count){
+        if(count <= 12)
+        std::cout << result.top().r() << " " << result.top().c() << std::endl;
+        }
+    result.pop();
+}
+
 // Return true if there is a path from (sr,sc) to (er,ec) through the maze;
 // return false otherwise
 bool pathExists(char maze[][10], int sr, int sc, int er, int ec)
 {
     std::stack<Coord> coordStack;
-    // Coord results[12];
     std::stack<Coord> results;
     coordStack.push(Coord(sr,sc));
-    size_t visit_count = 0;
+    char visit_count = 'v';
     
     while(!coordStack.empty()){
         Coord current = coordStack.top();
@@ -61,10 +69,11 @@ bool pathExists(char maze[][10], int sr, int sc, int er, int ec)
         results.push(current);
         
         if(maze[r][c] == '.'){                    // mark visited coordinate with count
-            visit_count++;
-            maze[r][c] = static_cast<char>(visit_count);
+            maze[r][c] = visit_count;
         }
         if(r == er && c == ec){                   // current = end coordinate
+            print_grid(maze);
+            print_stack(results);
             return true;
         }
         if(is_valid(maze, r - 1, c)){                   // moving NORTH
@@ -97,11 +106,9 @@ int main()
         { 'X','.','.','.','.','.','.','.','.','X' },
         { 'X','X','X','X','X','X','X','X','X','X' }
     };
-     print_grid(maze);
     
     if (pathExists(maze, 3,5, 8,8)){
         std::cout << "Solvable!" << std::endl;
-        print_grid(maze);
     }
     else
         std::cout << "Out of luck!" << std::endl;
