@@ -1,6 +1,6 @@
-//
-//  Coord.cpp
-//  homework2
+////
+////  Coord.cpp
+////  homework2
 
 #include<iostream>
 #include<stack>
@@ -47,9 +47,9 @@ void print_grid(char maze[][10])
 void print_stack(std::stack<Coord>result){
     for(size_t count = result.size(); count > 0; --count){
         if(count <= 12)
-        std::cout << result.top().r() << " " << result.top().c() << std::endl;
-        }
-    result.pop();
+            std::cout << result.top().r() << ", " << result.top().c() << std::endl;
+        result.pop();
+    }
 }
 
 // Return true if there is a path from (sr,sc) to (er,ec) through the maze;

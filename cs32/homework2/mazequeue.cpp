@@ -43,6 +43,14 @@ void print_grid(char maze[][10])
     }
 }
 
+// print queue:
+void print_queue(std::queue<Coord>result){
+    for(size_t count = 0; count < 12; ++count){
+        std::cout << result.front().r() << ", " << result.front().c() << std::endl;
+        result.pop();
+    }
+}
+
 // Return true if there is a path from (sr,sc) to (er,ec) through the maze;
 // return false otherwise
 bool pathExists(char maze[][10], int sr, int sc, int er, int ec)
@@ -50,7 +58,7 @@ bool pathExists(char maze[][10], int sr, int sc, int er, int ec)
     std::queue<Coord> coordQueue;
     std::queue<Coord> results;
     coordQueue.push(Coord(sr,sc));
-    size_t visit_count = 0;
+    char visit_count = 'v';
     
     while(!coordQueue.empty()){
         Coord current = coordQueue.front();
@@ -60,10 +68,11 @@ bool pathExists(char maze[][10], int sr, int sc, int er, int ec)
         results.push(current);
         
         if(maze[r][c] == '.'){                    // mark visited coordinate with count
-            visit_count++;
-            maze[r][c] = static_cast<char>(visit_count);
+            maze[r][c] = visit_count;
         }
         if(r == er && c == ec){                   // current = end coordinate
+            print_grid(maze);
+            print_queue(results);
             return true;
         }
         if(is_valid(maze, r - 1, c)){                   // moving NORTH
@@ -96,11 +105,9 @@ int main()
         { 'X','.','.','.','.','.','.','.','.','X' },
         { 'X','X','X','X','X','X','X','X','X','X' }
     };
-    print_grid(maze);
     
     if (pathExists(maze, 3,5, 8,8)){
         std::cout << "Solvable!" << std::endl;
-        print_grid(maze);
     }
     else
         std::cout << "Out of luck!" << std::endl;
