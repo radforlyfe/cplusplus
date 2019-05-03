@@ -50,69 +50,64 @@ int main() {
     z4 += z3; z4 /= z5;
     Complex z6 = z1 + z2 + z3 - z4;
     Complex z7 = z6;
-//    z7();
-//    6
+    z7();
     std::cout << "z4, z5, z6, z7: " << z4 << " " << z5 <<
     " " << z6 << " " << z7 << '\n';
-//    // And read in with std::cin
-//    std::cout << "Enter two doubles to set real and imaginary parts: ";
-//    std::cin >> z4;
-//    std::cout << "-z4 and +z5: " << -z4 << " " << +z5 << '\n';
-//    // Access real and imaginary parts
-//    z4["real"] = 0.14;
-//    std::cout << "real(z4) and imag(z4): " <<
-//    z4["real"] << " " << z4["imag"] << ’\n’;
-//    // increment and decrement operators
-//    ++++z4, z5------;
-//    std::cout << "z4 with two pre++ and z5 with 3 post--: "
-//    << z4 << " " << z5 << ’\n’;
-//    // store items in a vector, sort them
-//    std::vector<Complex> vec{ z1, z2, z3, z4, z5, z6, z7 }; // vector of complex
-//    // vector of strings because of conversion operator
-//    std::vector<std::string> vec2{ z1, z2, z3, z4, z5, z6, z7 };
-//    std::cout << "The elements: ";
-//    for (const std::string& complexString : vec2) { // print each as a string
-//        std::cout << complexString << " ";
-//    }
-//    std::sort(std::begin(vec), std::end(vec)); // sort the Complex numbers
-//    std::cout << "\nsorted vector: ";
-//    for (const Complex& number : vec) { // print the sorted list
-//        std::cout << number << " ";
-//    }
-//    std::cout << ’\n’;
-//    try{ // try accessing invalid index
-//        z2["reel"];
-//    }
-//    // upon failure, print the error and continue to run the program
-//    catch (const std::out_of_range& ORR){
-//        std::cerr << ORR.what() << ’\n’;
-//        7
-//
-//    }
-//    // access real part of a constant number
-//    const Complex z8 = z7;
-//    std::cout << "z8 imag: " << z8["imag"] << ‘\n’;
-//    // testing the tostrings...
-//    std::cout << Complex{ "3+4i" } << ’\n’ << Complex{ "i" } << ’\n’ <<
-//    Complex{ "i+2i-3.2+4.2i+6-1" } << ’\n’ << Complex{ "-i" } << ’\n’;
-//    std::string empty;
-//    std::string also_bad("3.2-seven");
-//    try { // outer try
-//        try { // inner try, makes a Complex from empty string
-//            Complex will_fail(empty);
-//            std::cout << will_fail << ’\n’;
-//        }
-//        catch (const std::logic_error& L) { // manage that exception
-//            std::cout << L.what() << ’\n’;
-//            Complex not_gonna_work = also_bad; // but give another bad string
-//            std::cout << not_gonna_work << ’\n’;
-//        } }
-//    catch (const std::logic_error& L) { // catch any throws here
-//        std::cerr << L.what() << ’\n’;
-//    }
+    // And read in with std::cin
+    std::cout << "Enter two doubles to set real and imaginary parts: ";
+    std::cin >> z4;
+    std::cout << "-z4 and +z5: " << -z4 << " " << +z5 << '\n';
+    // Access real and imaginary parts
+    z4["real"] = 0.14;
+    std::cout << "real(z4) and imag(z4): " <<
+    z4["real"] << " " << z4["imag"] << '\n';
+    // increment and decrement operators
+    ++++z4; z5------;
+    std::cout << "z4 with two pre++ and z5 with 3 post--: "
+    << z4 << " " << z5 << '\n';
+   //  store items in a vector, sort them
+    std::vector<Complex> vec{ z1, z2, z3, z4, z5, z6, z7 }; // vector of complex
+    // vector of strings because of conversion operator
+    std::vector<std::string> vec2{ z1, z2, z3, z4, z5, z6, z7 };
+    std::cout << "The elements: ";
+    for (const std::string& complexString : vec2) { // print each as a string
+        std::cout << complexString << " ";
+    }
+    std::sort(std::begin(vec), std::end(vec)); // sort the Complex numbers
+    std::cout << "\nsorted vector: ";
+    for (const Complex& number : vec) { // print the sorted list
+        std::cout << number << " ";
+    }
+    std::cout << '\n';
+    try{ // try accessing invalid index
+        z2["reel"];
+    }
+    // upon failure, print the error and continue to run the program
+    catch (const std::out_of_range& ORR){
+        std::cerr << ORR.what() << '\n';
+    }
+    // access real part of a constant number
+    const Complex z8 = z7;
+    std::cout << "z8 imag: " << z8["imag"] << '\n';
+    // testing the tostrings...
+    std::cout << Complex{ "3+4i" } << '\n' << Complex{ "i" } << '\n' <<
+    Complex{ "i+2i-3.2+4.2i+6-1" } << '\n' << Complex{ "-i" } << '\n';
+    std::string empty;
+    std::string also_bad("3.2-seven");
+    try { // outer try
+        try { // inner try, makes a Complex from empty string
+            Complex will_fail(empty);
+            std::cout << will_fail << '\n';
+        }
+        catch (const std::logic_error& L) { // manage that exception
+            std::cout << L.what() << '\n';
+            Complex not_gonna_work = also_bad; // but give another bad string
+            std::cout << not_gonna_work << '\n';
+        } }
+    catch (const std::logic_error& L) { // catch any throws here
+        std::cerr << L.what() << '\n';
+    }
     std::cin.get();
     std::cin.get();
     return 0;
-    
-    
 }
