@@ -33,7 +33,7 @@ public:
     double& operator[](std::string str);
     
     constexpr void operator()(); // call operator
-    explicit operator std::string() const; // conversion operator
+    operator std::string() const; // conversion operator
 
     friend constexpr bool operator<(const Complex& lhs, const Complex& rhs);
     
@@ -42,7 +42,7 @@ private:
     double imag_;
 };
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-member functions declarations:
 constexpr Complex operator+(Complex lhs, const Complex& rhs);
 constexpr Complex operator-(Complex lhs, const Complex& rhs);
@@ -59,7 +59,7 @@ constexpr bool operator!=(const Complex& lhs, const Complex& rhs);
 constexpr bool operator>(const Complex& lhs, const Complex& rhs);
 constexpr bool operator<=(const Complex& lhs, const Complex& rhs);
 
-/////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // INLINE Complex class member function definitions:
 constexpr Complex::Complex(double real, double imaginary): real_(real), imag_(imaginary){}
 
@@ -127,7 +127,7 @@ constexpr void Complex::operator()(){ // call operator
     imag_ = 0;
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-member functions definitions:
 constexpr Complex operator+(Complex lhs, const Complex& rhs){
     return lhs += rhs;

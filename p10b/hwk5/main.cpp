@@ -1,30 +1,15 @@
 //  main.cpp
 //  Assignment5
 
-#include<iostream>
-#include<string>
+#include "Complex.h"
 #include<vector>
 #include<algorithm>
-#include "Complex.h"
-
-int main() {
-//    Complex x(2,3);
-//    Complex y(1,1);
-//    std::cout << y["real"]<< " " << y["imag"] << std::endl;
-//    y += x;
-//    std::cout <<y["real"]<< " " << y["imag"] << std::endl;
-//    Complex c = x + y;
-//    std::cout << c["real"] << " " << c["imag"] << std::endl;
-//    Complex d = c - y;
-//    std::cout << d["real"] << " " << d["imag"] << std::endl;
-//    Complex b = ~y;
-//    std::cout << b["real"]<< " " << b["imag"] << std::endl;
-    
-    
+#include<iostream>
+int main(){
     // some warmups
     Complex u{ 2,3 }, v{ 1,1 };
-    std::cout << u<< '\n' << v << '\n';
-    std::cout << "simple stuff: " << u + v << '\n' << u - v << '\n' << u*v << '\n' << u / v << '\n';
+    std::cout << "simple stuff: " << u + v << '\n' << u - v <<
+    '\n' << u*v << '\n' << u / v << '\n';
     // constexptr stuff
     constexpr Complex z0 = 1.77_i;
     constexpr Complex z0_conj = ~z0;
@@ -33,7 +18,7 @@ int main() {
     // display this constexpr stuff
     std::cout << "z0, z0 conj, z0 copy, z0 neg: " << z0 <<
     " " << z0_conj << " " << z0_copy << " " << z0_negated << '\n';
-   // Create Complex numbers through constructors
+    // Create Complex numbers through constructors
     constexpr Complex z1, z2{ 3, 4 };
     constexpr Complex z3 = (Complex{1} += (4 - 3._i));
     Complex z4 = z3;
@@ -46,7 +31,7 @@ int main() {
     z5 = ~z5;
     std::cout << "z5 after conjugation: " << z5 << '\n';
     std::cout << "z5*z3: " << z5*z3 << '\n';
-   // Do some arithmetic to them and check values
+    // Do some arithmetic to them and check values
     z4 += z3; z4 /= z5;
     Complex z6 = z1 + z2 + z3 - z4;
     Complex z7 = z6;
@@ -65,7 +50,7 @@ int main() {
     ++++z4; z5------;
     std::cout << "z4 with two pre++ and z5 with 3 post--: "
     << z4 << " " << z5 << '\n';
-   //  store items in a vector, sort them
+    // store items in a vector, sort them
     std::vector<Complex> vec{ z1, z2, z3, z4, z5, z6, z7 }; // vector of complex
     // vector of strings because of conversion operator
     std::vector<std::string> vec2{ z1, z2, z3, z4, z5, z6, z7 };
@@ -109,5 +94,4 @@ int main() {
     }
     std::cin.get();
     std::cin.get();
-    return 0;
-}
+    return 0; }

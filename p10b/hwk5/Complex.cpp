@@ -4,7 +4,13 @@
 #include "Complex.h"
 
 Complex::Complex(std::string str){
-    size_t minus_i = str.find("+i");
+    if(str == ""){
+        throw std::logic_error("empty string");
+    }
+    if(str[0] == 'i'){
+        str.replace(0, 1, "1i");
+    }
+    size_t minus_i = str.find("-i");
     while(minus_i != std::string::npos){
         str.replace(minus_i, 2, "-1i");
         minus_i = str.find("-i");
