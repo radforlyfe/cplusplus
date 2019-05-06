@@ -14,22 +14,19 @@ enum CallType {
 class Medium{   // Base class
 public:
     Medium(std::string str);
-//    virtual ~Medium();
-    virtual std::string connect() const = 0; // pure virtual - not allowed to create object Medium
-    std::string id() const; // accessor of private member id
+    virtual ~Medium();
+    virtual std::string connect() const = 0;   // pure virtual - not allowed to create object Medium
+    std::string id() const;                    // accessor of private member id
     virtual std::string transmit(std::string msg) const; // why not 0? not list here and list in TwitterAccount and inherit from there?
     
 private:
-    Medium* m;
     std::string id_;
 };
 
 ///
 Medium::Medium(std::string str): id_(str){}
 
-//Medium::~Medium(){
-//    delete m;
-//}
+Medium::~Medium(){}
 
 std::string Medium::id() const{
     return id_;
@@ -43,12 +40,16 @@ std::string Medium::transmit(std::string msg) const{
 class TwitterAccount : public Medium{
 public:
     TwitterAccount(std::string);
-//    virtual ~TwitterAccount();
+    virtual ~TwitterAccount();
     virtual std::string connect() const;
 };
 
 ///
 TwitterAccount::TwitterAccount(std::string str): Medium(str){}
+
+TwitterAccount::~TwitterAccount(){
+    cout << "Destroying the Twitter Account " << id() << "." << std::endl;
+}
 
 std::string TwitterAccount::connect() const{
     return "Tweet";
@@ -58,7 +59,7 @@ std::string TwitterAccount::connect() const{
 class Phone: public Medium{
 public:
     Phone(std::string str, CallType type);
-//    virtual ~Phone();
+    virtual ~Phone();
     virtual std::string connect() const;
     virtual std::string transmit(std::string msg) const;
 
@@ -80,6 +81,10 @@ Phone::Phone(std::string str, CallType type): Medium(str){
     }
 }
 
+Phone::~Phone(){
+    cout << "Destroying the phone " << id() << "." << std::endl;
+}
+
 std::string Phone::connect() const{
     return "Call";
 }
@@ -92,12 +97,16 @@ std::string Phone::transmit(std::string msg) const{
 class EmailAccount: public Medium{
 public:
     EmailAccount(std::string str);
-//    virtual ~EmailAccount();
+    virtual ~EmailAccount();
     virtual std::string connect() const;
 };
 
 ///
 EmailAccount::EmailAccount(std::string str): Medium(str){}
+
+EmailAccount::~EmailAccount(){
+    cout << "Destroying the email account " << id() << "." << std::endl;
+}
 
 std::string EmailAccount::connect() const{
     return "Email";
@@ -124,7 +133,7 @@ int main()
         send(media[k], "Major power outage in West L.A.");
     
     // Clean up the media before exiting
-//    cout << "Cleaning up." << endl;
-//    for (int k = 0; k < 4; k++)
-//        delete media[k];
+    cout << "Cleaning up." << endl;
+    for (int k = 0; k < 4; k++)
+        delete media[k];
 }
