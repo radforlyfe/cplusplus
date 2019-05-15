@@ -4,33 +4,66 @@
 
 #include "MagicSquare.h"
 
-std::istream& operator>>(std::istream& in, std::vector<std::vector<int>>& square){
-    std::vector<int> row;
-    std::string line;
-    getline(std::cin, line);
-    std::istringstream ss(line);
-    char temp;
-    int number;
-    while(ss >> temp)
-    {
-        if (temp == '*'){
-            number = 0;
-         }
-        else if (isdigit(temp)){
-            number = temp - '0';
-        }
-        row.push_back(number);
-    }
-    square.push_back(row);
-    return in;
+MagicSquare::MagicSquare(const std::vector<std::vector<int>>& vec): data_(vec){}
+
+bool MagicSquare::empty(size_t row, size_t col) const{
+    return data_[row][col] == 0 ? true : false;
 }
 
-//std::ostream& operator<<(std::ostream& out, const std::vector<std::vector<int>>& square){
-//    for(size_t i = 0; i < square.size(); ++i){
-//        for(size_t j = 0; j < std::vector<int>.size; ++j){
-//            out <<
-//        }
-//    }
+bool MagicSquare::taken(int i) const{
+    if(taken_.find(i) != taken_.end()){
+        return true;
+    }
+    return false;
+}
+
+bool MagicSquare::checkRow() const{
+    size_t n = data_.size();
+    size_t target = n * (n * n + 1)/2;
+    int sum_row = 0;
+    int sum_col = 0;
+    for(size_t i = 0; i < n; ++i){
+        for(size_t j = 0; j < n; ++j){
+            sum_row += data_[i][j];
+            sum_col += data_[j][i];
+        }
+        if(sum_row != target && sum_col != target){
+            return false;
+        }
+    }
+    return true;
+}
+
+bool MagicSquare::checkValid() const{
+    size_t n = data_.size();
+    size_t target = n * (n * n + 1)/2;
+    int sum_diag1 = 0;
+    int sum_diag2 = 0;
+    if(checkRow()){
+        for(size_t i = 0; i < n; ++i){
+            sum_diag1 += data_[i][i];
+            sum_diag2 += data_[i][n - 1 - i];
+        }
+    }
+    if(sum_diag1 != target && sum_diag2 != target){
+        return false;
+    }
+    return true;
+}
+
+int MagicSquare::getnum(size_t index) const{
+    size_t i = index / data_.size();
+    size_t j = index % data_.size();
+    return data_[i][j];
+}
+
+//void MagicSquare::setnum(size_t index, int value) const{
+//    size_t i = index / data_.size();
+//    size_t j = index % data_.size();
+//    data_[i][j] = value;
+//}
 //
-//
+//void MagicSquare::solveSquare(int index){
+//    size_t n = data_.size();
+//    std::vector<int> num =
 //}
