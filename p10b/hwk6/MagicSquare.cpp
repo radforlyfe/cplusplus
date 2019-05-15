@@ -60,19 +60,46 @@ void MagicSquare::setnum(size_t index, int value){
     data_[i][j] = value;
 }
 
-//void MagicSquare::solveSquare(int index){
-//    size_t n = data_.size();
-//    std::vector<size_t> unused;
-//    if(index == n * n){
-//        std::cout << data_ << '\n';
-//    }
-//    for(size_t idx = 0; idx < n * n; ++idx){
-//        if(getnum(idx) == 0){
-//            unused.push_back(idx);
-//        }
-//    }
-//    for(size_t j = 0; j < unused.size(); ++j){
-//        setnum(
-//
-//    }
-//}
+int MagicSquare::getcount() const{
+    return count_solutions;
+}
+
+void MagicSquare::settaken(){
+    size_t n = data_.size();
+    for(size_t idx = 0; idx < n * n; ++idx){
+        if(getnum(idx) != 0){
+            taken_.insert(getnum(idx));
+        }
+    }
+}
+
+void MagicSquare::setI(){
+    size_t n = data_.size();
+    for(size_t idx = 0; idx < n * n; ++idx){
+        if(getnum(idx) == 0){
+            I.push_back(idx);
+        }
+    }
+}
+
+void MagicSquare::solveSquare(size_t index){
+    size_t n = data_.size();
+    if(index == n * n){
+        if(checkValid()){
+            ++count_solutions;
+            std::cout << data_;
+        }
+    }
+    settaken();
+    setI();
+    
+    for(int value = 1; value < n * n; ++value){
+        if(!taken(value)){
+            setnum(I, value);
+            taken_.insert(value);
+            solveSquare();
+        }
+    }
+    
+    
+}
