@@ -82,6 +82,15 @@ void MagicSquare::setI(){
     }
 }
 
+void MagicSquare::setunused(){
+    size_t n = data_.size();
+    for(int value = 1; value < n * n; ++value){
+        if(!taken(value)){
+            unused.push_back(value);
+        }
+    }
+}
+
 void MagicSquare::solveSquare(size_t index){
     size_t n = data_.size();
     if(index == n * n){
@@ -93,13 +102,11 @@ void MagicSquare::solveSquare(size_t index){
     settaken();
     setI();
     
-    for(int value = 1; value < n * n; ++value){
-        if(!taken(value)){
-            setnum(I, value);
-            taken_.insert(value);
-            solveSquare();
-        }
+    for(size_t idx = 0; idx < n * n; ++idx){
+        setnum(I[idx], unused[idx]);
+        taken_.insert(unused[idx]);
+        unused.erase(idx);
+        solveSquare(idx);
     }
-    
     
 }
