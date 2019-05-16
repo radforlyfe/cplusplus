@@ -15,28 +15,39 @@ std::ostream& operator<<(std::ostream& out, const std::vector<std::vector<int>>&
 
 class MagicSquare{
 public:
+    /**
+     Constructor that accepts a vector of vector of ints
+     @param vec is vector of vector of ints
+     */
     MagicSquare(const std::vector<std::vector<int>>& vec);
-    void solveSquare(size_t index);
-    int getnum(size_t index) const;
-    void setnum(size_t index, int value);
-    int getcount() const;
-    void settaken();
-    void setI();
     
+    /**
+    solves the magic square and calls on CheckRow and CheckValid
+     @param index is index
+     */
+    void solveSquare(size_t index);
+    
+    /**
+     Get the value at the index
+     @param index is index
+     @return value at the index
+     */
+    int getnum(size_t index) const;
+    
+    /**
+     Gets the count of solutions
+     @return integer of count
+     */
+    int getcount() const;
+
 private:
     bool empty(size_t row, size_t col) const;
-    bool taken(int i) const;
+    bool taken(int i);
     bool checkRow() const;
     bool checkValid() const;
     std::vector<std::vector<int>> data_;
     std::unordered_set<int> taken_;
-    std::vector<size_t> I;
     int count_solutions = 0;
 };
 
 #endif /* MagicSquare_h */
-
-// what are the private members?
-// which functions are private?
-// which functions are const& ?
-

@@ -4,6 +4,12 @@
 
 #include "MagicSquare.h"
 
+/**
+ overloaded operator>>
+ @param1 in - stream
+ @param2 square vector of vector of int
+ @return stream&
+ */
 std::istream& operator>>(std::istream& in, std::vector<std::vector<int>>& square){
     int value = 0;
     for(size_t i = 0; i < square.size(); ++i){
@@ -20,7 +26,12 @@ std::istream& operator>>(std::istream& in, std::vector<std::vector<int>>& square
     return in;
 }
 
-// don't I need to write this in my private member?
+/**
+ overloaded operator<<
+ @param1 out output stream
+ @param2 square vector of vector of int
+ @return stream&
+ */
 std::ostream& operator<<(std::ostream& out, const std::vector<std::vector<int>>& square){
     for(size_t i = 0; i < square.size(); ++i){
         for(size_t j = 0; j < square.size(); ++j){ // how to do size of the inner vector?
@@ -39,8 +50,9 @@ int main(){
     std::cout << "Enter a square format: \n";
     std::cin >> msquare;
     std::cout << msquare;
-//  solveSquare(xx);
+    MagicSquare s(msquare);
+    s.solveSquare(0);
     std::cout << "Solving complete! \n";
-//  std::cout << "There were " << xx << "solutions! \n";
+    std::cout << "There were " << s.getcount() << " solutions! \n";
     return 0;
 }
