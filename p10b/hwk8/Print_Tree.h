@@ -92,9 +92,9 @@ namespace pic10b {
     std::ostream& Tree::iterator::output_it(std::ostream& out) const {
                                   // compute distance to the root
         size_t lev = 0;           // level (how far it is from the root)
-        node* temp = curr;        // temporary node
-        while (temp->parent) {    // while it has a parent (i.e. while it is not a root)
-            temp = temp->parent;  // go up
+        node* temp = curr_;        // temporary node
+        while (temp->parent_) {    // while it has a parent (i.e. while it is not a root)
+            temp = temp->parent_;  // go up
             lev++;                // increment level
         }
                                   // temp = root now
@@ -106,7 +106,7 @@ namespace pic10b {
         for (size_t i = 0; i < lev; ++i) { // for each level (from the root to the target node)
             
             // Find the direction and track
-            if (curr->value_ < temp->value_) {  // to the left
+            if (curr_->value_ < temp->value_) {  // to the left
                 if (dir == 'R') { // direction is changed from R to L
                     dir_change_flag = true;
                 }
@@ -114,9 +114,9 @@ namespace pic10b {
                     dir_change_flag = false;
                 }
                 dir = 'L'; // set direction = true;
-                temp = temp->left; // track pedigree
+                temp = temp->left_; // track pedigree
             }
-            else if (curr->value_ > temp->value_) { // to the right
+            else if (curr_->value_ > temp->value_) { // to the right
                 if (dir == 'L') { // direction is changed from L to R
                     dir_change_flag = true;
                 }
@@ -124,7 +124,7 @@ namespace pic10b {
                     dir_change_flag = false;
                 }
                 dir = 'R';
-                temp = temp->right;
+                temp = temp->right_;
             }// Now we determined which child to follow from level i, and found the direction, and we also know if the direction has changed or not
             // Print stem, if any. Otherwise print white space
             if (dir_change_flag) { // direction changed --> add vertical stem
@@ -143,16 +143,16 @@ namespace pic10b {
         else if (dir == 'R') { // downward
             out << stem_h_in_d;
         }
-        out << std::setw(outputdigits) << curr->value_; // node value
-        if (curr->left) { // has a left child
-            if ((curr->right)) { // has both
+        out << std::setw(outputdigits) << curr_->value_; // node value
+        if (curr_->left_) { // has a left child
+            if ((curr_->right_)) { // has both
                 out << stem_h_out_b;
             }
             else { // left only
                 out << stem_h_out_u;
             }
         }
-        else if (curr->right) { // right only
+        else if (curr_->right_) { // right only
             out << stem_h_out_d;
         }
         return out;

@@ -13,8 +13,19 @@ namespace pic10b{
         class node;                   //nested node class
         node *root_;                  //the root of the tree
         size_t size_;
-        void deleteTree(node*);       //to recursively delete the tree
-        void traverseInsert(node*);   //to help with copying
+        
+        /**
+         deleteTree member function, removes all the nodes under the node n, including n
+         @param n the subtree rooted at n
+         */
+        void deleteTree(node* n);
+        
+        /**
+         traverseInsert member function, assists with copying from node n (making copy-from tree's root)
+         @param n the subtree rooted at n
+         */
+        void traverseInsert(node* n);
+        
     public:
         class iterator;               //nested iterator class
         /**
@@ -22,11 +33,11 @@ namespace pic10b{
          */
         Tree() noexcept;
         
-//        /**
-//         Destructor
-//         */
-//        ~Tree();
-//        
+        /**
+         Destructor
+         */
+        ~Tree();
+        
         /**
          Copy constructor: makes a new independent copy of the other Tree
          @param other the Tree to copy from
@@ -40,19 +51,12 @@ namespace pic10b{
         Tree(Tree&& other) noexcept;
         
         /**
-         Copy assignment operator: makes the left value same as right value
+         Copy and Move assignment operator: makes the left value same as right value
          @param rhs the assigned-from Tree
          @return the updated assigned-to Tree
          */
-        Tree& operator=(const Tree& rhs) &;
-        
-        /**
-         Move assignment operator: makes the left value same as right value by harvesting its resources
-         @param rhs the assigned-from Tree
-         @return the updated assigned-to Tree
-         */
-        Tree& operator=(Tree&& rhs) &;
-        
+        Tree& operator=(Tree rhs) &;
+    
         /**
          swap function, swaps one Tree with another
          @param one the first Tree
@@ -96,7 +100,7 @@ namespace pic10b{
     };
     
     void swap(Tree& one, Tree& another);                               //redeclared at namespace level - to allow for fully qualified lookup (ADL)
-    std::ostream& operator<<(std::ostream out, const Tree& tree);
+    std::ostream& operator<<(std::ostream& out, const Tree& tree);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class Tree::node{
@@ -104,31 +108,51 @@ namespace pic10b{
         friend iterator;                  //to be able to advance by checking node values
     private:
         double value_;                    //the data
-        node *left, *right, *parent;      //pointers to left and right and parent nodes
+        node *left_, *right_, *parent_;   //pointers to left and right and parent nodes
+        
         /**
          Constructor for Node: creates a new node, accepts double value and initializes left and right to nullptr
          @param value the value of the node
          */
         node(double value);
-        node* leftmost(node *root);
+        
+        bool insertNode(node* n);
+        
+         /**
+         leftmost member function, finds and returns the leftmost child (move as far left as possible)
+         */
+        node* leftmost();
+        
+        /**
+         rightmost member function, finds and returns the rightmost child (move as far right as possible)
+         */
         node* rightmost();
         
-        bool insertNode(node*);
+        /**
+         left_of_parent member function, returns true iff left child of its parent
+         @return true iff it is a left child of its parent
+         */
+        bool left_of_parent();
         
+        /**
+         left_of_parent member function, returns true iff right child of its parent
+         @return true iff it is a right child of its parent
+         */
+        bool right_of_parent();
     };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     class Tree::iterator{
-        friend Tree;            //Tree may modify data of iterator during operations
+        friend Tree;             //Tree may modify data of iterator during operations
     private:
-        node *curr;             //currently managed node
-        const Tree *container;  //holding container - iterator should not change the tree
+        node* curr_;             //currently managed node
+        const Tree* container_;  //holding container - iterator should not change the tree
         /**
          Constructor for iterator: creates a iterator, initializes pointer to node and Tree
          @param n pointer to node
          @param tree pointer to Tree
          */
-        iterator(node *n, const Tree *tree);
+        iterator(node* n, const Tree* tree);
     public:
         /**
          prefix (unary) operator++: the pointer to current node is incremented by 1
@@ -160,13 +184,13 @@ namespace pic10b{
          dereference operator
          @return returns the double is stored
          */
-        const double& operator*() const;
+        double operator*() const;
         
         /**
          arrow operator
          @return address of the current node
          */
-        const double* operator->() const;
+        double* operator->() const;
         
         /**
          comparison operator== : compared lexicographically
@@ -176,6 +200,11 @@ namespace pic10b{
          */
         friend bool operator==(const iterator& lhs, const iterator& rhs);
         
+        /**
+         member function, to print the tree
+         @param out ostream parameter out
+         @return ostream
+         */
         std::ostream& output_it(std::ostream& out) const;
     };
 
