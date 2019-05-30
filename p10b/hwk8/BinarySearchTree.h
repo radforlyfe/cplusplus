@@ -100,6 +100,7 @@ namespace pic10b{
     };
     
     void swap(Tree& one, Tree& another);                               //redeclared at namespace level - to allow for fully qualified lookup (ADL)
+    
     std::ostream& operator<<(std::ostream& out, const Tree& tree);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

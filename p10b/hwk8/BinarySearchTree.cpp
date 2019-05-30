@@ -105,9 +105,7 @@ namespace pic10b{
         }
         if(!it.curr_->left_ && !it.curr_->right_){                      //0 children
             if(!it.curr_->parent_){                                     //given node is root (no parent)
-                delete it.curr_;                                            //delete node
                 root_ = nullptr;                                            //assign root to nullptr
-                --size_;                                                    //decrement size
             }
             else{                                                       //has parent
                 if(it.curr_->right_of_parent()){                        //right child of parent
@@ -116,9 +114,9 @@ namespace pic10b{
                 else if(it.curr_->left_of_parent()){                    //left child of parent
                     it.curr_->parent_->left_ = nullptr;                     //set parent's left that pointed to the node to null
                 }
-                delete it.curr_;                                            //delete the node
-                --size_;                                                    //decrement size
             }
+            delete it.curr_;                                            //delete the node
+            --size_;                                                    //decrement size
         }
         else{                                                           //1 or 2 children
             if(!it.curr_->left_){                                       //has 1 right child
@@ -187,14 +185,7 @@ namespace pic10b{
         return size_;
     }
 
-//    std::ostream& operator<<(std::ostream& out, const Tree& tree){
-//        for(auto i : tree){
-//            out << i << ' ';
-//        }
-//        out << '\n';
-//        return out;
-//    }
-        
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     Tree::node::node(double value): value_(value), left_(nullptr), right_(nullptr) {} //node stores value with children left_ and right_ both null
     
