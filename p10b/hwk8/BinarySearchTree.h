@@ -99,8 +99,14 @@ namespace pic10b{
         size_t size() const;
     };
     
-    void swap(Tree& one, Tree& another);                               //redeclared at namespace level - to allow for fully qualified lookup (ADL)
+    void swap(Tree& one, Tree& another);     //redeclared at namespace level - to allow for fully qualified lookup (ADL)
     
+    /**
+     operator<< function, overloaded to display all the elements of the list
+     @param out ostream reference
+     @param tree Tree object
+     @return reference to ostream
+     */
     std::ostream& operator<<(std::ostream& out, const Tree& tree);
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////

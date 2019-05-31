@@ -9,7 +9,7 @@ namespace pic10b{
 
     Tree::Tree() noexcept: root_(nullptr), size_(0){}               //default construction: creating empty tree
     
-    Tree::~Tree(){
+    Tree::~Tree(){                                                  //destructor
         deleteTree(root_);
     }
     
@@ -30,13 +30,13 @@ namespace pic10b{
         if(!n){                                                     //empty tree
             return;
         }
-        insert(n->value_);                                          //no need to make a new node?????????
-        traverseInsert(n->left_);
-        traverseInsert(n->right_);
+        insert(n->value_);                                          //insert the value of current node n (from other)
+        traverseInsert(n->left_);                                   //insert all the node values under n->left (=subtree on the left)
+        traverseInsert(n->right_);                                  //insert all the node values under n->right (=subtree on the right)
     }
     
     Tree::Tree(Tree&& other) noexcept: Tree(){                      //move constructor
-        swap(*this, other);
+        swap(*this, other);                                         //swap pointers and size_
     }
     
     Tree& Tree::operator=(Tree rhs) &{
@@ -67,34 +67,17 @@ namespace pic10b{
     }
     
     void Tree::insert(double value){
-        if(!root_){                                                 //if tree is empty, insert a node and increment size
+        if(!root_){                                                 //if tree is empty, make root_ a new created node and increment size
             root_ = new node(value);
             ++size_;
-            return;
         }
-        node* current = root_;
-        while(current){                                             //while node is not null
-            if(value == current->value_){                           //if value is duplicate, do not insert
-                return;
+        else{                                                       //if tree not empty
+            node* n = new node(value);                              //create a new node
+            if(root_->insertNode(n)){                               //recursively pass it node to node until in place, only inserts the node if possible
+                ++size_;                                            //increment the size only if the insertion was successful
             }
-            else if(value < current->value_){                       //if value is lesser
-                if(current->left_){                                 //if left is not null, keep going left
-                    current = current->left_;}
-                else{                                               //if left is null, assign it a new node, insert and increment size
-                    current->left_ = new node(value);
-                    current->left_->parent_ = current;
-                    ++size_;
-                }
-            }
-            else{                                                   //if value if greater
-                if(current->right_){                                //if right is not null, keep going right
-                    current = current->right_;
-                }
-                else{                                               //if right is null, assign it a new node, insert and increment size
-                    current->right_ = new node(value);
-                    current->right_->parent_ = current;
-                    ++size_;
-                }
+            else{
+                delete n;                                           //delete the node since its a duplicated value, do not increment size
             }
         }
     }
@@ -103,64 +86,60 @@ namespace pic10b{
         if(!root_){                                                         //empty tree
             return;
         }
-        if(!it.curr_->left_ && !it.curr_->right_){                      //0 children
-            if(!it.curr_->parent_){                                     //given node is root (no parent)
+        if(!it.curr_->left_ && !it.curr_->right_){         //0 children
+            if(it.curr_ == root_){                                          //given node is root (no parent)
                 root_ = nullptr;                                            //assign root to nullptr
             }
-            else{                                                       //has parent
-                if(it.curr_->right_of_parent()){                        //right child of parent
+            else{                                                           //has parent
+                if(it.curr_->right_of_parent()){                            //right child of parent
                     it.curr_->parent_->right_ = nullptr;                    //set parent's right that pointed to the node to null
                 }
-                else if(it.curr_->left_of_parent()){                    //left child of parent
+                else if(it.curr_->left_of_parent()){                        //left child of parent
                     it.curr_->parent_->left_ = nullptr;                     //set parent's left that pointed to the node to null
                 }
             }
-            delete it.curr_;                                            //delete the node
-            --size_;                                                    //decrement size
+            delete it.curr_;                                                //delete the node
+            --size_;                                                        //decrement size
         }
-        else{                                                           //1 or 2 children
-            if(!it.curr_->left_){                                       //has 1 right child
-                if(!it.curr_->parent_){                                     //given node is root (no parent)
-                    delete it.curr_;                                        //delete node
+        else{                                              //1 or 2 children
+            if(!it.curr_->left_){                                           //has 1 right child
+                if(it.curr_ == root_){                                      //given node is root (no parent)
                     root_ = it.curr_->right_;                               //assign new root
-                    --size_;                                                //decrement size_
                 }
-                else{                                                   //has parent
+                else{                                                       //has parent
                     node* temp = it.curr_->right_;                          //go to the child of the given node
                     temp->parent_ = it.curr_->parent_;                      //set node's child's parent to node's parent
-                    if(it.curr_->right_of_parent()){                    //right child of parent
+                    if(it.curr_->right_of_parent()){                        //right child of parent
                         it.curr_->parent_->right_ = temp;                   //set parent's right that pointed to the node to node's child
                     }
-                    else if(it.curr_->left_of_parent()){                //left child of parent
+                    else if(it.curr_->left_of_parent()){                    //left child of parent
                         it.curr_->parent_->left_ = temp;                    //set parent's left that pointed to the node to node's child
                     }
-                    delete it.curr_;                                        //delete the node
-                    --size_;                                                //decrement size
                 }
+                delete it.curr_;                                            //delete the node
+                --size_;                                                    //decrement size
             }
-            else if(!it.curr_->right_){                                  //has 1 left child
-                if(!it.curr_->parent_){                                     //given node is root (no parent)
-                    delete it.curr_;                                        //delete node
+            else if(!it.curr_->right_){                                     //has 1 left child
+                if(it.curr_ == root_){                                      //given node is root (no parent)
                     root_ = it.curr_->left_;                                //assign new root
-                    --size_;                                                //decrement size_
                 }
-                else{                                                   //has parent
+                else{                                                       //has parent
                     node* temp = it.curr_->left_;                           //go to the child of the given node
                     temp->parent_ = it.curr_->parent_;                      //set node's child's parent to node's parent
-                    if(it.curr_->right_of_parent()){                    //right child of parent
+                    if(it.curr_->right_of_parent()){                        //right child of parent
                         it.curr_->parent_->right_ = temp;                   //set parent's right that pointed to the node to node's child
                     }
-                    else if(it.curr_->left_of_parent()){                //left child of parent
+                    else if(it.curr_->left_of_parent()){                    //left child of parent
                         it.curr_->parent_->left_ = temp;                    //set parent's left that pointed to the node to node's child
                     }
-                    delete it.curr_;                                        //delete the node
-                    --size_;                                                //decrement size
                 }
+                delete it.curr_;                                            //delete the node
+                --size_;                                                    //decrement size
             }
-            else{                                                       //2 children
+            else{                                          //2 children
                 node* temp = it.curr_->right_->leftmost();                  //go to the right child and as far left as possible
                 it.curr_->value_ = temp->value_;                            //overwrite given node's value with right-far-left value
-                erase(it);                                                  //erase temp - back to base case with 0 or 1 child
+                erase(++it);                                                //erase temp (++it): back to base case with 0 or 1 child
                 }
         }
         return;
@@ -170,11 +149,11 @@ namespace pic10b{
         if(!root_){                                                 //if tree is empty, return iterator to end()
             return iterator(nullptr, this);
         }
-        node *n = root_;
-        while(n->left_){                                            //if left is not null, keep going left
+        node* n = root_;
+        while(n->left_){                                            //if this node has a left child, keep going left
             n = n->left_;
         }
-        return iterator(n, this);                                   //if left is null, return the previous node iterator
+        return iterator(n, this);                                   //if left is null, return the iterator to the previous node
     }
     
     Tree::iterator Tree::end() const{
@@ -187,41 +166,68 @@ namespace pic10b{
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    Tree::node::node(double value): value_(value), left_(nullptr), right_(nullptr) {} //node stores value with children left_ and right_ both null
+    Tree::node::node(double value): value_(value), left_(nullptr), right_(nullptr), parent_(nullptr) {} //node stores value with left_, right_, parent as null
+    
+    bool Tree::node::insertNode(node* n){
+        if(n->value_ < value_){                                     //if value is lesser
+            if(left_){                                              //if this node has a left child, keep going left (recurse on the left child)
+                return left_->insertNode(n);
+            }
+            else{                                                   //if left is null
+                left_ = n;                                          //make n the new left child
+                n->parent_ = this;                                  //make this n's parent
+                return true;
+            }
+        }
+        else if(n->value_ > value_){                                //if value if greater
+            if(right_){                                             //if this node has a right child, keep going right (recurse on the right child)
+                return right_->insertNode(n);
+            }
+            else{                                                   //if right is null
+                right_ = n;                                         //make n the new right child
+                n->parent_ = this;                                  //make this n's parent
+                return true;
+            }
+        }
+        else{
+            return false;                                           //if value is same, nothing to add and return false
+        }
+    }
+    
     
     Tree::node* Tree::node::leftmost(){
-        if(!left_){                                                     //no left child
+        if(!left_){                                                 //no left child
             return this;
         }
-        else{                                                           //has left child
-            return left_->leftmost();                                   //recursive call
+        else{                                                       //has left child
+            return left_->leftmost();                               //recurse on the left child
         }
     }
     
     Tree::node* Tree::node::rightmost(){
-        if(!right_){                                                    //no right child
+        if(!right_){                                                //no right child
             return this;
         }
-        else{                                                           //recursive call
-            return right_->rightmost();
+        else{                                                       //has right child
+            return right_->rightmost();                             //recurse on the right child
         }
     }
 
     bool Tree::node::left_of_parent(){
-        if(parent_){                                                    //not the root
-            if(parent_->left_ == this){                                 //left child of its parent
+        if(parent_){                                                //not the root
+            if(parent_->left_ == this){                             //left child of its parent
                 return true;
             }
-        }                                                              //root or right child of its parent
+        }                                                           //root or right child of its parent
         return false;
     }
         
     bool Tree::node::right_of_parent(){
-        if(parent_){                                                    //not the root
-            if(parent_->right_ == this){                                //right child of its parent
+        if(parent_){                                                //not the root
+            if(parent_->right_ == this){                            //right child of its parent
                 return true;
             }
-        }                                                               //root or left child of its parent
+        }                                                           //root or left child of its parent
         return false;
     }
     
@@ -238,15 +244,15 @@ namespace pic10b{
         }
         else{                                                                     //in valid range, and not the last node
             if(curr_->right_){                                                    //has a right_ child
-                curr_ = curr_->right_->leftmost();                                //go 'left_most' from the right_ child
+                curr_ = curr_->right_->leftmost();                                //go 'leftmost' from the right child
                 return *this;
             }
-            else{                                                                 //no right_ child
-                node* temp = curr_;
-                while(temp->parent_ != nullptr && temp != temp->parent_->left_){  //while temp is right_ child of its parent_
-                    temp = temp->parent_;                                         //traverse up the tree
-                }                                                                 //temp is no longer right_ child : parent_.value_ > curr_.value_
-                curr_ = temp->parent_;
+            else{                                                                 //no right child
+                node* n = curr_;
+                while(n -> right_of_parent()){                                    //while n is right child of its parent
+                    n = n->parent_;                                               //traverse up the tree
+                }                                                                 //n is no longer right child : parent_.value_ > curr_.value_
+                curr_ = n->parent_;                                               //curr is now the successor
                 return *this;
             }
         }
@@ -261,31 +267,31 @@ namespace pic10b{
             return *this;
         }
         else{                                                                     //in valid range, and not the first node
-            if(curr_->left_){                                                     //has a right_ child
-                curr_ = curr_->left_->rightmost();                                //go 'right_most' from the left_ child
+            if(curr_->left_){                                                     //has a left child
+                curr_ = curr_->left_->rightmost();                                //go 'rightmost' from the left child
                 return *this;
             }
-            else{                                                                 //no left_ child
-                node *temp = curr_;
-                while(temp->parent_ != nullptr && temp == temp->parent_->left_){  //while temp is left_ child of its parent_
-                    temp = temp->parent_;                                         //traverse up the tree
-                }                                                                 //temp is no longer left_ child : parent_.value_ < curr_.value_
-                curr_ = temp->parent_;
+            else{                                                                 //no left child
+                node* n = curr_;
+                while(n->parent_ != nullptr && n == n->parent_->left_){           //while n is left child of its parent
+                    n = n->parent_;                                               //traverse up the tree
+                }                                                                 //n is no longer left child : parent_.value_ < curr_.value_
+                curr_ = n->parent_;                                               //curr is now the predecessor
                 return *this;
             }
         }
     }
     
     Tree::iterator Tree::iterator::operator++(int unused){                        //postfix ++ binary operator
-        Tree::iterator copy(curr_, container_);
-        ++(*this);
-        return copy;
+        Tree::iterator copy(curr_, container_);                                   //copy construct this
+        ++(*this);                                                                //increment this
+        return copy;                                                              //return the copy
     }
     
     Tree::iterator Tree::iterator::operator--(int unused){                        //postfix -- binary operator
-        Tree::iterator copy(curr_, container_);
-        --(*this);
-        return copy;
+        Tree::iterator copy(curr_, container_);                                   //copy construct this
+        --(*this);                                                                //decrement this
+        return copy;                                                              //return the copy
     }
     
     double Tree::iterator::operator*() const{                                     //dereference operator: return reference to the int stored
@@ -301,7 +307,7 @@ namespace pic10b{
     }
     
     bool operator!=(const Tree::iterator& lhs, const Tree::iterator& rhs){
-        return !(lhs == rhs);
+        return !(lhs == rhs);                                                     //not of the ==operator
     }
 
 }
