@@ -1,9 +1,5 @@
 //
 //  main.cpp
-//  ASSIGNMENT3 PIC10B
-//
-//  Created by Radhika Nayar on 4/18/19.
-//  Copyright © 2019 Radhika Nayar. All rights reserved.
 //
 
 #include <iostream>
@@ -15,14 +11,14 @@ pic10b::VectorString foo() {
 }
 
 int main() {
-
+    
     pic10b::VectorString vs;
     std::cout << "vs stats: " << vs.size() << " " << vs.empty() << " " << vs.capacity() << '\n';
     vs.push_back("hello");
     std::cout << "vs stores: " << vs.at(0) << '\n';
     
     auto foo_out = foo();
-
+    
     pic10b::VectorString vs2(std::move(foo_out));
     std::cout << "vs2 stats: " << vs2.size() << " " << vs2.capacity() << '\n';
     

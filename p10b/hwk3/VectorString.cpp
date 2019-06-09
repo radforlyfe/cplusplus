@@ -1,20 +1,17 @@
+
 /**
  @file VectorString.cpp
- @author Radhika Nayar
- @brief This is the cpp file for my own VectorString class for Assignment3 Pic 10B
-//  Created by Radhika Nayar on 4/18/19.
-//  Copyright © 2019 Radhika Nayar. All rights reserved.
-*/
+ */
 
 #include "VectorString.h"
 
 namespace pic10b{ // open up the namespace
-
+    
     // Default Constructor: size is 0, capacity is 1 (initial_capacity), ptr points to dynamic array of string of one element
     VectorString::VectorString(): vec_size(0), vec_capacity(0){
         reserve(INITIAL_CAPACITY);
     }
-
+    
     
     // Constructor2: accepts size (count) and input string (value).
     // Allocates a dynamic array with size as count, capacity as twice count and initializes all string variables to value.
@@ -85,11 +82,11 @@ namespace pic10b{ // open up the namespace
         //data_ = new_data; // data_ now points to the new memory location
         vec_capacity = new_cap; // vec_capacity is the new capacity
     }
-
+    
     bool VectorString::empty() const{
         return (size()==0);
     }
-        
+    
     // Size member function: returns the size of the vector.
     size_type VectorString::size() const{
         return vec_size;
@@ -117,7 +114,7 @@ namespace pic10b{ // open up the namespace
             vec_size--; // deletes one element as long as size is not zero
         }
     }
-
+    
     // DeleteAt member function: accepts an index value that removes the element at the given index and shifts all elements backwards.
     void VectorString::deleteAt(size_type pos){
         if(pos>=0 && pos<size()){
@@ -140,17 +137,17 @@ namespace pic10b{ // open up the namespace
             data_[index] = data_[index-1];
         }
         data_[pos]= value; // sets value to pos index
+        vec_size++;
     }
-            
+    
     
     // At member function: Accepts an index value that returns the element at the given index by reference or reference to const.
     std::string& VectorString::at( size_type pos ) {
         return data_[pos]; // gives value at pos
     }
-
+    
     // At member function: Accepts an index value that returns the element at the given index by reference or reference to const.
     const std::string& VectorString::at( size_type pos ) const{
         return data_[pos]; // gives value at pos
     }
 }
-
